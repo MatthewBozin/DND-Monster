@@ -5,22 +5,15 @@ function App() {
 
   const [appState, setAppState] = useState({monster: {}})
 
-  const getMonster = () => {
-    fetch(`https://www.dnd5eapi.co/api/monsters/`)
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        let selected = data.results[Math.floor(Math.random()*data.results.length)].index;
-        fetch(`https://www.dnd5eapi.co/api/monsters/${selected}`)
-          .then(res => res.json())
-          .then(data => {
-            appState.monster = data;
-            setAppState({...appState});
-            console.log(data);
-          })
-          .catch(err => console.log(err))
-          })
-      .catch(err => console.log(err))
+  const getMonster = async () => {
+    const monsterListResponse = await fetch(`https://www.dnd5eapi.co/api/monsters/`)
+    const monsterListData = await monsterListResponse.json()
+    let selected = monsterListData.results[Math.floor(Math.random()*monsterListData.results.length)].index;
+    const monsterResponse = await fetch(`https://www.dnd5eapi.co/api/monsters/${selected}`);
+    const monsterData = await monsterResponse.json()
+    appState.monster = monsterData;
+    setAppState({...appState});
+    console.log(monsterData);
   }
 
   const stats = ['Hit Points','Hit Dice','Challenge Rating','Armor Class', 'Size'];
